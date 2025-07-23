@@ -43,22 +43,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      db:
-        image: postgres:13
-        ports: ['5432:5432']
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     env:
       RAILS_ENV: test
-      DATABASE_URL: postgres://postgres:password@localhost:5432/test_db
 
     steps:
       - uses: actions/checkout@v3
@@ -72,10 +58,10 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      - name: Set up DB
+      - name: Prepare DB
         run: |
-          bin/rails db:create
-          bin/rails db:migrate
+          cp config/database.yml.github config/database.yml
+          bundle exec rails db:create db:migrate RAILS_ENV=test
 
       - name: Run RSpec
         run: bundle exec rspec
