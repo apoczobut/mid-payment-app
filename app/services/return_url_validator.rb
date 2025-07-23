@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class ReturnUrlValidator
-  ALLOWED_DOMAINS = [ 'mysite.com' ]
+  ALLOWED_DOMAINS = ['mysite.com'].freeze
 
   private_constant :ALLOWED_DOMAINS
 

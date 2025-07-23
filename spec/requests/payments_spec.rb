@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Payments", type: :request do
+RSpec.describe 'Payments', type: :request do
   describe 'POST /api/purchase' do
     let(:request) { post api_purchase_path, params: request_params }
     let(:response_body) { { resultCode: '100', accessToken: 'token123', od_id: 'order123' } }
@@ -16,7 +18,7 @@ RSpec.describe "Payments", type: :request do
     end
 
     before do
-      stub_request(:post, "https://partner.com/paygate/auth/").to_return(
+      stub_request(:post, 'https://partner.com/paygate/auth/').to_return(
         body: response_body.to_json,
         headers: { 'Content-Type' => 'application/json' }
       )
@@ -26,7 +28,7 @@ RSpec.describe "Payments", type: :request do
     context 'when success' do
       it 'returns accessToken on success' do
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)["accessToken"]).to eq('token123')
+        expect(JSON.parse(response.body)['accessToken']).to eq('token123')
       end
     end
 
@@ -35,7 +37,7 @@ RSpec.describe "Payments", type: :request do
 
       it 'returns error on failure' do
         expect(response).to have_http_status(:bad_request)
-        expect(JSON.parse(response.body)["error"]).to eq('Invalid data')
+        expect(JSON.parse(response.body)['error']).to eq('Invalid data')
       end
     end
 
@@ -68,7 +70,7 @@ RSpec.describe "Payments", type: :request do
 
       it 'returns error for invalid return_url' do
         expect(response).to have_http_status(:bad_request)
-        expect(JSON.parse(response.body)["error"]).to eq('Invalid return_url')
+        expect(JSON.parse(response.body)['error']).to eq('Invalid return_url')
       end
     end
   end
@@ -89,13 +91,12 @@ RSpec.describe "Payments", type: :request do
     let(:return_url) { 'https://mysite.com/redirect' }
 
     before do
-      stub_request(:put, "http://testpayments.com/api/purchase/order123").to_return(status: 200)
+      stub_request(:put, 'http://testpayments.com/api/purchase/order123').to_return(status: 200)
       allow(purchase_notifier).to receive(:notify).and_call_original
     end
 
     context 'when success' do
       let(:od_status) { '10' }
-
 
       before do
         payment_session

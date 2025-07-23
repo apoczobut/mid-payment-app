@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class PaymentsController < ApplicationController
   def create
     unless ReturnUrlValidator.valid?(purchase_params[:return_url])
       return render json: { error: 'Invalid return_url' }, status: :bad_request
     end
+
     result = PartnerClient.request_token(purchase_params)
 
     if result[:success]
@@ -19,6 +22,8 @@ class PaymentsController < ApplicationController
     return render plain: 'Invalid session', status: :unprocessable_entity unless session
 
     PurchaseNotifier.notify(params[:od_id], purchase_status)
+
+    return render plain: 'Unsafe return URL', status: :forbidden unless ReturnUrlValidator.valid?(session.return_url)
 
     redirect_to session.return_url, allow_other_host: true
   end
