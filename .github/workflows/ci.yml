@@ -34,8 +34,11 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Install dependencies
+        run: bundle install
+
       - name: Lint code for consistent style
-        run: bin/rubocop
+        run: bundle exec rubocop
 
   test:
     runs-on: ubuntu-latest
@@ -63,7 +66,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Install dependencies
